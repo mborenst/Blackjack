@@ -47,7 +47,9 @@ public class GameController : MonoBehaviour
         }
         if (introTimer <= 0)
         {
-            SceneManager.LoadScene("Menu");
+            SceneManager.LoadScene("BlackJack");
+            // SceneManager.LoadScene("Menu"); 
+            // Actual Command, temporary
         }
     }
 
