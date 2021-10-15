@@ -16,24 +16,30 @@ public class HowToPlayController : MonoBehaviour
         instance = this;
     }
 
-    void Reset()
+    public void Reset()
     {
         stage = 0;
         casinoMan = casinoTutorialPictures[stage];
     }
 
     // Update is called once per frame
-    void nextStep()
+    public void NextStep()
     {
-        stage++;
+        if (stage < casinoTutorialPictures.Length-1)
+        {
+            stage++;
+        }
         casinoMan = casinoTutorialPictures[stage];
         // Other Stuff
     }
 
     // Update is called once per frame
-    void lastStep()
+    public void LastStep()
     {
-        stage--;
+        if (stage > 0)
+        {
+            stage--;
+        }
         casinoMan = casinoTutorialPictures[stage];
         // Other Stuff
     }
