@@ -16,7 +16,7 @@ public class HowToPlayController : MonoBehaviour
         instance = this;
     }
 
-    void Start()
+    void Reset()
     {
         stage = 0;
         casinoMan = casinoTutorialPictures[stage];

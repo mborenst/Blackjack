@@ -333,6 +333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 580fd35381591bf4ba6a9531ed4a78dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  introTime: 5
   introGraphic: {fileID: 1716279013}
   introText: {fileID: 406853283}
 --- !u!4 &844223688
