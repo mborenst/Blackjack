@@ -18,10 +18,12 @@ public class MenuController : MonoBehaviour
 
     void Start()
     {
+
         // mainmenu = active
         // title = active
         // controls = inactive
         // howToPlay = inactive
+
     }
 
     // Update is called once per frame
