@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,11 +16,19 @@ public class GameController : MonoBehaviour
     public SpriteRenderer introGraphic;
     public Text introText;
 
+    // Picture loads
+    public SpriteRenderer cardBack;
+
     private void Awake()
     {
         instance = this;
         DontDestroyOnLoad(instance);
         introTimer = introTime;
+    }
+
+    internal SpriteRenderer getCardBack()
+    {
+        return cardBack;
     }
 
     // Start is called before the first frame update
