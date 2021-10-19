@@ -16,8 +16,14 @@ public class GameController : MonoBehaviour
     public SpriteRenderer introGraphic;
     public Text introText;
 
-    // Picture loads
-    public SpriteRenderer cardBack;
+    // BlackJack things
+    public CardDeck deck;
+    private Hand playerHand;
+    private Hand cpuHand;
+    private bool playerTurn;
+
+
+    // Animation Things
 
     private void Awake()
     {
@@ -26,15 +32,25 @@ public class GameController : MonoBehaviour
         introTimer = introTime;
     }
 
-    internal SpriteRenderer getCardBack()
+    private void Start()
     {
-        return cardBack;
+        playerHand = new Hand();
+        cpuHand = new Hand();
+        // Debug.Log(playerHand);
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public void beginNewGame(Sprite image)
     {
+        deck.setImage(image);
+        deck.NewShuffledDeck();
+        deck.transform.position = new Vector2(-8, 1.75f);
+        playerHand = new Hand();
+        cpuHand = new Hand();
+    }
 
+    internal SpriteRenderer getCardBack()
+    {
+        return deck.getCardBack();
     }
 
     // Update is called once per frame
@@ -44,6 +60,19 @@ public class GameController : MonoBehaviour
         {
             introUpdate();
         }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            playerHand.add(deck.Draw(), true);
+        }
+        if (!playerTurn)
+            playerTurn = false;
+        if (playerHand.getScore() > 21)
+        {
+            playerTurn = false;
+        }
+        //deck.updateDeck();
+        //playerHand.updateHand();
+        //cpuHand.updateHand();
     }
 
     void introUpdate()
@@ -71,7 +100,7 @@ public class GameController : MonoBehaviour
     // Changes Scene to Blackjack Scene
     void startNewGame()
     {
-
+        
     }
 
     // Changes Scene to Menu Scene

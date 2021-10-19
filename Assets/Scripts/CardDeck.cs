@@ -5,13 +5,41 @@ using UnityEngine;
 
 public class CardDeck : MonoBehaviour
 {
-    private List<Card> deck;
+    // Deck variables
+    private List<Card> deck = new List<Card>();
     private string[] suits = { "Heart", "Diamond", "Spade", "Club" };
 
-    // Start is called before the first frame update
+    // Graphic things
+    private GameObject go;
+    private SpriteRenderer deckPile;
+    public Sprite[] spades;
+    public Sprite[] clubs;
+    public Sprite[] diamonds;
+    public Sprite[] hearts;
+    public Sprite back;
+
+
+
     void Start()
     {
-        
+        go = new GameObject("Card Deck");
+        deckPile = go.AddComponent<SpriteRenderer>();
+        deck = new List<Card>();
+    }
+
+    public void setImage(Sprite image)
+    {
+        back = image;
+        foreach (Card card in deck)
+        {
+            card.back = image;
+        }
+        deckPile.sprite = image;
+    }
+
+    public SpriteRenderer getCardBack()
+    {
+        return deckPile;
     }
 
     public void NewShuffledDeck()
@@ -25,11 +53,34 @@ public class CardDeck : MonoBehaviour
         deck = new List<Card>();
         foreach(string suit in suits)
         {
-            for (int i = 1; 1 < 13; i++)
+            for (int i = 1; i <= 13; i++)
             {
-                deck.Add(new Card(suit, i));
+                deck.Add(new Card(suit, i, back, getCardFront(suit, i)));
             }
         }
+    }
+
+    Sprite getCardFront(string suit, int i)
+    {
+        if (suit.Equals("Club"))
+        {
+            return clubs[i];
+        } else if (suit.Equals("Spade"))
+        {
+            return spades[i];
+        }
+        else if (suit.Equals("Diamond"))
+        {
+            return diamonds[i];
+        } else // suit.Equals("Heart")
+        {
+            return hearts[i];
+        }
+    }
+
+    internal void updateDeck()
+    {
+        throw new NotImplementedException();
     }
 
     public void NewShuffledDeck(List<Card> preexistingCards)
@@ -68,6 +119,7 @@ public class CardDeck : MonoBehaviour
     {
         Card temp = deck[0];
         deck.RemoveAt(0);
+        Debug.Log(temp.UserCardName());
         return temp;
     }
 

@@ -7,17 +7,45 @@ public class Card : MonoBehaviour
 {
     // Outside Variables
     private Rigidbody2D self;
-    private SpriteRenderer face;
-    private SpriteRenderer back;
+    private GameObject go;
+    private SpriteRenderer sprite;
+    private Sprite face;
+    public Sprite back;
+
     // Inside Variables
     public int number;
     public string suit;
     public bool faceUp = false;
 
-    public Card(string suit, int number)
+    public Card(string suit, int number, Sprite back, Sprite front)
     {
         this.suit = suit;
         this.number = number;
+        this.back = back;
+        this.face = front;
+        go = new GameObject(FormalCardName());
+        sprite = go.AddComponent<SpriteRenderer>();
+        if (faceUp)
+            sprite.sprite = face;
+        else
+            sprite.sprite = this.back;
+        sprite.sortingLayerName = "Deck and Frames";
+        sprite.sortingOrder = 1;
+        sprite.transform.position = new Vector2 (-8,2);
+        sprite.transform.localScale = new Vector3(.8f, .8f, 1);
+        go.SetActive(false);
+    }
+
+    internal void setPosition(Vector2 pos)
+    {
+        sprite.transform.position = pos;
+    }
+
+    internal int getScore()
+    {
+        if (number > 10)
+            return 10;
+        return number;
     }
 
     public Card()
@@ -26,21 +54,36 @@ public class Card : MonoBehaviour
         suit = "Spade";
     }
 
-    public int I { get; }
+    public void show()
+    {
+        go.SetActive(true);
+        sprite.sortingLayerName = "Cards";
+    }
+
+    public void hide()
+    {
+        go.SetActive(false);
+    }
+
+    public void flip()
+    {
+        faceUp = !faceUp;
+        if (faceUp)
+            sprite.sprite = face;
+        else
+            sprite.sprite = back;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        self = GetComponent<Rigidbody2D>();
-        face = GetComponent<SpriteRenderer>();
-        back = GameController.instance.getCardBack();
+
     }
 
     void setCard(string suit, int number)
     {
         this.number = number;
         this.suit = suit;
-        // face = GameController.getFace(cardName());
     }
 
     void setCard(string suit, string number)
