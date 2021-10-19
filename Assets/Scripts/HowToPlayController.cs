@@ -1,36 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HowToPlayController : MonoBehaviour
 {
     public static HowToPlayController instance;
-    public SpriteRenderer[] casinoTutorialPictures;
 
-    private int stage;
-    private SpriteRenderer casinoMan;
-    
+    private int stage = 0;
+    private int maxStages = 5;
+    public Text titleText;
+    public TMP_Text main;
 
     void Awake()
     {
         instance = this;
+        stage = 0;
     }
 
     public void Reset()
     {
         stage = 0;
-        casinoMan = casinoTutorialPictures[stage];
+        updateTextToStep();
     }
 
     // Update is called once per frame
     public void NextStep()
     {
-        if (stage < casinoTutorialPictures.Length-1)
+        if (stage < maxStages)
         {
             stage++;
         }
-        casinoMan = casinoTutorialPictures[stage];
-        // Other Stuff
+        updateTextToStep();
     }
 
     // Update is called once per frame
@@ -40,7 +40,11 @@ public class HowToPlayController : MonoBehaviour
         {
             stage--;
         }
-        casinoMan = casinoTutorialPictures[stage];
-        // Other Stuff
+        updateTextToStep();
+    }
+
+    public void updateTextToStep()
+    {
+        titleText.text = "How To Play";
     }
 }
