@@ -21,7 +21,7 @@ public class Hand
 
     void Start()
     {
-        this.cards = new Card[5];
+        this.cards = new Card[6];
         pos = new Vector2(-5, -1);
     }
 
@@ -50,10 +50,7 @@ public class Hand
         card.show();
         card.setPosition(new Vector2(pos.x + ((HandCount()+ 1) * 2), pos.y));
         card.flip();
-        Debug.Log("Beforehand: " + HandCount());
         addCard(card);
-        //cards.AddRange(new List<Card> { card });
-        Debug.Log("Afterhand: " + HandCount());
     }
 
     public int getScore()
@@ -97,6 +94,11 @@ public class Hand
             }
         }
         return sum;
+    }
+
+    public bool canDrawCards()
+    {
+        return HandCount() < 5;
     }
 
     internal void updateHand()

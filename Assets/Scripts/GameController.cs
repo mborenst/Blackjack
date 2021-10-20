@@ -46,6 +46,7 @@ public class GameController : MonoBehaviour
         deck.transform.position = new Vector2(-8, 1.75f);
         playerHand = new Hand();
         cpuHand = new Hand();
+        playerTurn = true;
     }
 
     internal SpriteRenderer getCardBack()
@@ -60,16 +61,20 @@ public class GameController : MonoBehaviour
         {
             introUpdate();
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (playerTurn && Input.GetKeyDown(KeyCode.Space))
         {
             playerHand.add(deck.Draw(), true);
         }
-        if (!playerTurn)
-            playerTurn = false;
-        if (playerHand.getScore() > 21)
+
+        if (playerTurn && (playerHand.getScore() > 21 || !playerHand.canDrawCards()))
         {
             playerTurn = false;
+            Debug.Log("The Player is Ruined!! It is no longer the Player's turn...");
         }
+    }
+
+    private void FixedUpdate()
+    {
         //deck.updateDeck();
         //playerHand.updateHand();
         //cpuHand.updateHand();
@@ -86,6 +91,7 @@ public class GameController : MonoBehaviour
         if (introTimer <= 0)
         {
             SceneManager.LoadScene("BlackJack");
+            // Camera.current.targetDisplay = 2;
             // SceneManager.LoadScene("Menu"); 
             // Actual Command, temporary
         }

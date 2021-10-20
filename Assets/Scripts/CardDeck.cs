@@ -18,7 +18,10 @@ public class CardDeck : MonoBehaviour
     public Sprite[] hearts;
     public Sprite back;
 
-
+    void Awake()
+    {
+        GameController.instance.deck = this;
+    }
 
     void Start()
     {
@@ -121,7 +124,6 @@ public class CardDeck : MonoBehaviour
     {
         Card temp = deck[0];
         deck.RemoveAt(0);
-        Debug.Log(temp.UserCardName());
         return temp;
     }
 
