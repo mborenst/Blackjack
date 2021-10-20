@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Hand 
 {
-    List<Card> cards;
+    private Card[] cards;
     float drawingCard = 0;
     Vector2 pos;
 
@@ -21,34 +21,52 @@ public class Hand
 
     void Start()
     {
-        cards = new List<Card>();
+        this.cards = new Card[5];
         pos = new Vector2(-5, -1);
+    }
+
+    int HandCount()
+    {
+        int length = 0;
+        while (cards[length] != null)
+        {
+            length++;
+        }
+        return length;
+    }
+
+    void addCard(Card card)
+    {
+        cards[HandCount()] = card;
     }
 
     public void add(Card card, bool isPlayerDraw)
     {
-        if (cards == null)
-            cards = new List<Card>{card};
-        else
-            cards.Add(card);
         if (isPlayerDraw)
             drawingCard = 3;
         else
             drawingCard = 2;
+        card.activate();
         card.show();
-        card.setPosition(new Vector2(pos.x + (cards.Count * 2), pos.y));
+        card.setPosition(new Vector2(pos.x + ((HandCount()+ 1) * 2), pos.y));
         card.flip();
+        Debug.Log("Beforehand: " + HandCount());
+        addCard(card);
+        //cards.AddRange(new List<Card> { card });
+        Debug.Log("Afterhand: " + HandCount());
     }
 
     public int getScore()
     {
         int sum = 0;
         List<Card> aces = new List<Card>();
-        if (cards == null)
+        if (HandCount() == 0)
             return 0;
         foreach (Card card in cards)
         {
-            if (!card.getNumber().Equals("Ace"))
+            if (card == null)
+                sum += 0;
+            else if (!card.getNumber().Equals("Ace"))
                 sum += card.getScore();
             else
                 aces.Add(card);

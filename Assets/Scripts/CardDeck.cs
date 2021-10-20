@@ -10,7 +10,7 @@ public class CardDeck : MonoBehaviour
     private string[] suits = { "Heart", "Diamond", "Spade", "Club" };
 
     // Graphic things
-    private GameObject go;
+    //private GameObject go;
     private SpriteRenderer deckPile;
     public Sprite[] spades;
     public Sprite[] clubs;
@@ -22,8 +22,9 @@ public class CardDeck : MonoBehaviour
 
     void Start()
     {
-        go = new GameObject("Card Deck");
-        deckPile = go.AddComponent<SpriteRenderer>();
+        //go = new GameObject("Card Deck");
+        this.name = "Card Deck";
+        deckPile = GetComponent<SpriteRenderer>();
         deck = new List<Card>();
     }
 
@@ -46,6 +47,7 @@ public class CardDeck : MonoBehaviour
     {
         NewDeck();
         ShuffleDeck();
+        // Destroy(new GameObject());
     }
 
     public void NewDeck()

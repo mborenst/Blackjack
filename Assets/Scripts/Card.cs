@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Card : MonoBehaviour
+public class Card
 {
     // Outside Variables
     private Rigidbody2D self;
@@ -23,17 +23,6 @@ public class Card : MonoBehaviour
         this.number = number;
         this.back = back;
         this.face = front;
-        go = new GameObject(FormalCardName());
-        sprite = go.AddComponent<SpriteRenderer>();
-        if (faceUp)
-            sprite.sprite = face;
-        else
-            sprite.sprite = this.back;
-        sprite.sortingLayerName = "Deck and Frames";
-        sprite.sortingOrder = 1;
-        sprite.transform.position = new Vector2 (-8,2);
-        sprite.transform.localScale = new Vector3(.8f, .8f, 1);
-        go.SetActive(false);
     }
 
     internal void setPosition(Vector2 pos)
@@ -52,6 +41,26 @@ public class Card : MonoBehaviour
     {
         number = 1;
         suit = "Spade";
+    }
+
+    public void activate()
+    {
+        go = new GameObject(FormalCardName());
+        sprite = go.AddComponent<SpriteRenderer>();
+        if (faceUp)
+            sprite.sprite = face;
+        else
+            sprite.sprite = this.back;
+        sprite.sortingLayerName = "Deck and Frames";
+        sprite.sortingOrder = 1;
+        sprite.transform.position = new Vector2(-8, 2);
+        sprite.transform.localScale = new Vector3(.8f, .8f, 1);
+        go.SetActive(false);
+    }
+
+    public GameObject GetGameObject()
+    {
+        return go;
     }
 
     public void show()
