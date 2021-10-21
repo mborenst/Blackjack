@@ -120,6 +120,11 @@ public class CardDeck : MonoBehaviour
         }
     }
 
+    public bool CanDraw()
+    {
+        return deck.Count > 0;
+    }
+
     public Card Draw()
     {
         Card temp = deck[0];

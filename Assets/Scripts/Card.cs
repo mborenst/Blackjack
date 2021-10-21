@@ -58,6 +58,11 @@ public class Card
         go.SetActive(false);
     }
 
+    public void setScale(Vector3 scale)
+    {
+        sprite.transform.localScale = scale;
+    }
+
     public GameObject GetGameObject()
     {
         return go;

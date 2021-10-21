@@ -17,11 +17,13 @@ public class GameController : MonoBehaviour
     public Text introText;
 
     // BlackJack things
+    public bool playingGame = false;
     public CardDeck deck;
     private Hand playerHand;
     private Hand cpuHand;
     private bool playerTurn;
-
+    public Text playerScore;
+    public Text enemyScore;
 
     // Animation Things
 
@@ -35,7 +37,7 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         playerHand = new Hand();
-        cpuHand = new Hand();
+        cpuHand = new Hand(new Vector2(-6, 4));
         // Debug.Log(playerHand);
     }
 
@@ -45,8 +47,10 @@ public class GameController : MonoBehaviour
         deck.NewShuffledDeck();
         deck.transform.position = new Vector2(-8, 1.75f);
         playerHand = new Hand();
-        cpuHand = new Hand();
+        cpuHand = new Hand(new Vector2(-6, 4));
         playerTurn = true;
+        playingGame = true;
+        playerScore.text = "Player Score: \n" + playerHand.getScore();
     }
 
     internal SpriteRenderer getCardBack()
@@ -61,23 +65,68 @@ public class GameController : MonoBehaviour
         {
             introUpdate();
         }
-        if (playerTurn && Input.GetKeyDown(KeyCode.Space))
+        if (playerTurn && Input.GetKeyDown(KeyCode.Space) && !playerHand.isTransitioning())
         {
-            playerHand.add(deck.Draw(), true);
+            if (deck.CanDraw())
+                playerHand.add(deck.Draw());
+            else
+            {
+                deck.NewShuffledDeck(playerHand.GetCards());
+            }
         }
-
-        if (playerTurn && (playerHand.getScore() > 21 || !playerHand.canDrawCards()))
+        if (playerTurn && Input.GetKeyDown(KeyCode.Return) && !playerHand.isTransitioning())
         {
             playerTurn = false;
-            Debug.Log("The Player is Ruined!! It is no longer the Player's turn...");
+            playerScore.text = "Player Score: \n" + playerHand.getScore(); 
+            Debug.Log("You Stopped!");
+            Debug.Log("It is no longer the Player's turn...");
+
+        }
+
+        if (playerTurn && !playerHand.isTransitioning() && (playerHand.getScore() > 21 || !playerHand.canDrawCards()))
+        {
+            playerTurn = false;
+            if (playerHand.getScore() > 21)
+            {
+                Debug.Log("Disaster! You lost!");
+            }
+            Debug.Log("It is no longer the Player's turn...");
         }
     }
 
     private void FixedUpdate()
     {
         //deck.updateDeck();
-        //playerHand.updateHand();
-        //cpuHand.updateHand();
+        playerHand.updateHand();
+        if (playerTurn && !playerHand.isTransitioning())
+        {
+            playerScore.text = "Player Score: \n" + playerHand.getScore();
+        }
+        if (!playerTurn && playingGame)
+        {
+            if (!cpuHand.isTransitioning() && cpuHand.getScore() < 16 && cpuHand.canDrawCards())
+            {
+                enemyScore.text = "Enemy Score: \n" + cpuHand.getScore();
+                if (deck.CanDraw())
+                    cpuHand.add(deck.Draw());
+                else
+                {
+                    deck.NewShuffledDeck(addLists(playerHand.GetCards(), cpuHand.GetCards())); 
+                }
+            }
+            cpuHand.updateHand();
+
+            if (!cpuHand.isTransitioning() && (cpuHand.getScore() < 16 || cpuHand.canDrawCards()))
+            {
+                enemyScore.text = "Enemy Score: \n" + cpuHand.getScore();
+            }
+        }
+    }
+
+    private List<Card> addLists(List<Card> cards1, List<Card> cards2)
+    {
+        cards1.AddRange(cards2);
+        return cards1;
     }
 
     void introUpdate()
