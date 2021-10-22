@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
     Text introText;
 
     // BlackJack things
+    internal bool gameStarted;
     internal bool playingGame = false;
     private DiscardPile discard;
     private CardDeck deck;
@@ -32,6 +33,7 @@ public class GameController : MonoBehaviour
     private RectTransform loseCanvas;
     int enemyWins;
     private Text enemyWinCount;
+    Camera gameCam;
 
     private void Awake()
     {
@@ -46,6 +48,13 @@ public class GameController : MonoBehaviour
     {
         playerHand = new Hand();
         cpuHand = new Hand(new Vector2(-6, 4));
+        gameStarted = false;
+    }
+
+    public void setObject(Camera cam)
+    {
+        gameCam = cam;
+        gameCam.targetDisplay = 2;
     }
 
     public void setObject(RectTransform panel, bool win)
@@ -80,19 +89,42 @@ public class GameController : MonoBehaviour
 
     public void beginNewGame(Sprite image)
     {
-        deck.setImage(image);
-        deck.NewShuffledDeck();
-        deck.transform.position = new Vector2(-8, 1.75f);
-        playerHand = new Hand();
-        cpuHand = new Hand(new Vector2(-6, 4));
-        playerTurn = true;
-        playingGame = true;
-        playerScore.text = "Player Score: \n" + playerHand.getScore();
-        drawingInitialCards = true;
-        playerHand.add(deck.Draw());
-        cpuHand.add(deck.Draw());
-        playerWins = 0;
-        enemyWins = 0;
+        if (gameStarted)
+        {
+            deck.setImage(image);
+            /*
+            deck.NewShuffledDeck();
+            deck.transform.position = new Vector2(-8, 1.75f);
+            // Change Here
+            discard.Add(addLists(playerHand.GetCards(), cpuHand.GetCards()));
+            discard.DestroyCards();
+            playerHand = new Hand();
+            cpuHand = new Hand(new Vector2(-6, 4));
+            // Change Ends Here
+            playerTurn = true;
+            playingGame = true;
+            playerScore.text = "Player Score: \n" + playerHand.getScore();
+            drawingInitialCards = true;
+            playerHand.add(deck.Draw());
+            cpuHand.add(deck.Draw());
+            gameStarted = true;
+            */
+        } else {
+            deck.setImage(image);
+            deck.NewShuffledDeck();
+            deck.transform.position = new Vector2(-8, 1.75f);
+            playerHand = new Hand();
+            cpuHand = new Hand(new Vector2(-6, 4));
+            playerTurn = true;
+            playingGame = true;
+            playerScore.text = "Player Score: \n" + playerHand.getScore();
+            drawingInitialCards = true;
+            playerHand.add(deck.Draw());
+            cpuHand.add(deck.Draw());
+            playerWins = 0;
+            enemyWins = 0;
+            gameStarted = true;
+        }
     }
 
     internal SpriteRenderer getCardBack()
@@ -143,8 +175,11 @@ public class GameController : MonoBehaviour
             drawingInitialCards = true;
             playerHand.add(deck.Draw());
             cpuHand.add(deck.Draw());
-            playerWins = 0;
-            enemyWins = 0;
+        }
+
+        if (playerTurn && Input.GetKeyDown(KeyCode.Escape))
+        {
+            gameCam.targetDisplay = 2;
         }
     }
 
@@ -200,7 +235,7 @@ public class GameController : MonoBehaviour
     bool shouldDraw()
     {
         return cpuHand.HandCount() < 2 // Always draw at least two cards
-            || (cpuHand.getScore() < 16 && !(playerHand.getScore() > 21))
+            || (cpuHand.getScore() < 16 && playerHand.getScore() > cpuHand.getScore() && !(playerHand.getScore() > 21))
             || (playerHand.getScore() <= 19 && cpuHand.getScore() < playerHand.getScore());
     }
 

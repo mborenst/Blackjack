@@ -65,6 +65,11 @@ public class DiscardPile : MonoBehaviour
         {
             start = new List<Vector2>();
             end = new List<Vector2>();
+            foreach(Card card in cards)
+            {
+                if (card.GetGameObject() != null) 
+                    card.GetGameObject().transform.SetParent(this.transform);
+            }
             if (cards.Count > 15)
                 clearCacheCards();
         }
@@ -83,5 +88,8 @@ public class DiscardPile : MonoBehaviour
             Destroy(card.GetGameObject());
         }
         cards = new List<Card>();
+        start = new List<Vector2>();
+        end = new List<Vector2>();
+        movingTime = 0;
     }
 }
