@@ -17,13 +17,16 @@ public class GameController : MonoBehaviour
     public Text introText;
 
     // BlackJack things
-    public bool playingGame = false;
+    internal bool playingGame = false;
+    public DiscardPile discard;
     public CardDeck deck;
     private Hand playerHand;
     private Hand cpuHand;
     private bool playerTurn;
     public Text playerScore;
     public Text enemyScore;
+    bool drawingInitialCards;
+
 
     // Animation Things
 
@@ -51,6 +54,9 @@ public class GameController : MonoBehaviour
         playerTurn = true;
         playingGame = true;
         playerScore.text = "Player Score: \n" + playerHand.getScore();
+        drawingInitialCards = true;
+        playerHand.add(deck.Draw());
+        cpuHand.add(deck.Draw());
     }
 
     internal SpriteRenderer getCardBack()
@@ -92,33 +98,59 @@ public class GameController : MonoBehaviour
             }
             Debug.Log("It is no longer the Player's turn...");
         }
+
+        if (!playerTurn && !playingGame && Input.GetKeyDown(KeyCode.Return))
+        {
+            Debug.Log("New Game Begin");
+            discard.Add(addLists(playerHand.GetCards(), cpuHand.GetCards()));
+            discard.DestroyCards();
+
+            playerHand = new Hand();
+            cpuHand = new Hand(new Vector2(-6, 4));
+            playerTurn = true;
+            playingGame = true;
+            playerScore.text = "Player Score: \n" + playerHand.getScore();
+            drawingInitialCards = true;
+            playerHand.add(deck.Draw());
+            cpuHand.add(deck.Draw());
+        }
     }
 
     private void FixedUpdate()
     {
         //deck.updateDeck();
+        if (drawingInitialCards && !playerHand.isTransitioning())
+        {
+            playerHand.add(deck.Draw());
+            drawingInitialCards = false;
+        }
         playerHand.updateHand();
         if (playerTurn && !playerHand.isTransitioning())
         {
             playerScore.text = "Player Score: \n" + playerHand.getScore();
         }
+        cpuHand.updateHand();
+        if (!cpuHand.isTransitioning())
+            enemyScore.text = "Enemy Score: \n" + cpuHand.getScore();
         if (!playerTurn && playingGame)
         {
-            if (!cpuHand.isTransitioning() && cpuHand.getScore() < 16 && cpuHand.canDrawCards())
+            if (!cpuHand.isTransitioning() && cpuHand.canDrawCards() && (cpuHand.HandCount() < 2 || (cpuHand.getScore() < 16 && !(playerHand.getScore() > 21))))
             {
-                enemyScore.text = "Enemy Score: \n" + cpuHand.getScore();
                 if (deck.CanDraw())
                     cpuHand.add(deck.Draw());
                 else
                 {
-                    deck.NewShuffledDeck(addLists(playerHand.GetCards(), cpuHand.GetCards())); 
+                    deck.NewShuffledDeck(addLists(playerHand.GetCards(), cpuHand.GetCards()));
                 }
-            }
-            cpuHand.updateHand();
-
-            if (!cpuHand.isTransitioning() && (cpuHand.getScore() < 16 || cpuHand.canDrawCards()))
+            } 
+            else
             {
-                enemyScore.text = "Enemy Score: \n" + cpuHand.getScore();
+                if (!cpuHand.isTransitioning())
+                {
+                    playingGame = false;
+                    //evaluateOutcome();
+                    Debug.Log("Game Ended!");
+                }
             }
         }
     }

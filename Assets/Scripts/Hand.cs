@@ -42,7 +42,7 @@ public class Hand
         startPlace = new Vector2(-8, 1.75f);
     }
 
-    int HandCount()
+    public int HandCount()
     {
         int length = 0;
         while (cards[length] != null)
