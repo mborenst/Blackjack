@@ -20,7 +20,7 @@ public class CardDeck : MonoBehaviour
 
     void Awake()
     {
-        GameController.instance.deck = this;
+        //GameController.instance.deck = this;
     }
 
     void Start()

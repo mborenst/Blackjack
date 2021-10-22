@@ -13,25 +13,25 @@ public class GameController : MonoBehaviour
     // Intro timer
     public float introTime;
     private float introTimer;
-    public SpriteRenderer introGraphic;
-    public Text introText;
+    SpriteRenderer introGraphic;
+    Text introText;
 
     // BlackJack things
     internal bool playingGame = false;
-    public DiscardPile discard;
-    public CardDeck deck;
+    private DiscardPile discard;
+    private CardDeck deck;
     private Hand playerHand;
     private Hand cpuHand;
     private bool playerTurn;
-    public Text playerScore;
-    public Text enemyScore;
+    private Text playerScore;
+    private Text enemyScore;
     bool drawingInitialCards;
-    public RectTransform winsCanvas;
+    private RectTransform winsCanvas;
     int playerWins;
-    public Text playerWinCount;
-    public RectTransform loseCanvas;
+    private Text playerWinCount;
+    private RectTransform loseCanvas;
     int enemyWins;
-    public Text enemyWinCount;
+    private Text enemyWinCount;
 
     private void Awake()
     {
@@ -48,14 +48,34 @@ public class GameController : MonoBehaviour
         cpuHand = new Hand(new Vector2(-6, 4));
     }
 
-    public void setObject(Hand hand)
+    public void setObject(RectTransform panel, bool win)
     {
-
+        if (win)
+            this.winsCanvas = panel;
+        else
+            this.loseCanvas = panel;
     }
 
-    public void setObject(Text hand)
+    public void setObject(Text text, int value)
     {
+        if (value == 0)
+            playerScore = text;
+        else if (value == 1)
+            enemyScore = text;
+        else if (value == 2)
+            playerWinCount = text;
+        else //if (value == 2)
+            enemyWinCount = text;
+    }
 
+    public void setObject(CardDeck carddeck)
+    {
+        this.deck = carddeck;
+    }
+
+    public void setObject(DiscardPile discardPile)
+    {
+        this.discard = discardPile;
     }
 
     public void beginNewGame(Sprite image)
@@ -71,6 +91,8 @@ public class GameController : MonoBehaviour
         drawingInitialCards = true;
         playerHand.add(deck.Draw());
         cpuHand.add(deck.Draw());
+        playerWins = 0;
+        enemyWins = 0;
     }
 
     internal SpriteRenderer getCardBack()
@@ -121,6 +143,8 @@ public class GameController : MonoBehaviour
             drawingInitialCards = true;
             playerHand.add(deck.Draw());
             cpuHand.add(deck.Draw());
+            playerWins = 0;
+            enemyWins = 0;
         }
     }
 

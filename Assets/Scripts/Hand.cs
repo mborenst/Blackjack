@@ -65,7 +65,6 @@ public class Hand
         card.setPosition(startPlace);
         endPlace = new Vector2(pos.x + ((HandCount() + 1) * 2), pos.y);
         addCard(card);
-        //card.flip();
     }
 
     public int getScore()
