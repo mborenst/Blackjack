@@ -82,5 +82,6 @@ public class DiscardPile : MonoBehaviour
         {
             Destroy(card.GetGameObject());
         }
+        cards = new List<Card>();
     }
 }

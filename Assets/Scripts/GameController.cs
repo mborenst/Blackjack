@@ -26,22 +26,36 @@ public class GameController : MonoBehaviour
     public Text playerScore;
     public Text enemyScore;
     bool drawingInitialCards;
-
-
-    // Animation Things
+    public RectTransform winsCanvas;
+    int playerWins;
+    public Text playerWinCount;
+    public RectTransform loseCanvas;
+    int enemyWins;
+    public Text enemyWinCount;
 
     private void Awake()
     {
         instance = this;
         DontDestroyOnLoad(instance);
         introTimer = introTime;
+        playerWins = 0;
+        enemyWins = 0;
     }
 
     private void Start()
     {
         playerHand = new Hand();
         cpuHand = new Hand(new Vector2(-6, 4));
-        // Debug.Log(playerHand);
+    }
+
+    public void setObject(Hand hand)
+    {
+
+    }
+
+    public void setObject(Text hand)
+    {
+
     }
 
     public void beginNewGame(Sprite image)
@@ -85,26 +99,19 @@ public class GameController : MonoBehaviour
         {
             playerTurn = false;
             playerScore.text = "Player Score: \n" + playerHand.getScore(); 
-            Debug.Log("You Stopped!");
-            Debug.Log("It is no longer the Player's turn...");
 
         }
 
         if (playerTurn && !playerHand.isTransitioning() && (playerHand.getScore() > 21 || !playerHand.canDrawCards()))
         {
             playerTurn = false;
-            if (playerHand.getScore() > 21)
-            {
-                Debug.Log("Disaster! You lost!");
-            }
-            Debug.Log("It is no longer the Player's turn...");
         }
 
         if (!playerTurn && !playingGame && !discard.isMoving() && Input.GetKeyDown(KeyCode.Return))
         {
-            Debug.Log("New Game Begin");
             discard.Add(addLists(playerHand.GetCards(), cpuHand.GetCards()));
-            // discard.DestroyCards();
+            winsCanvas.gameObject.SetActive(false);
+            loseCanvas.gameObject.SetActive(false);
 
             playerHand = new Hand();
             cpuHand = new Hand(new Vector2(-6, 4));
@@ -144,7 +151,7 @@ public class GameController : MonoBehaviour
                 enemyScore.text = "Enemy Score: \n" + cpuHand.getScore();
             if (!playerTurn && playingGame)
             {
-                if (!cpuHand.isTransitioning() && cpuHand.canDrawCards() && (cpuHand.HandCount() < 2 || (cpuHand.getScore() < 16 && !(playerHand.getScore() > 21))))
+                if (!cpuHand.isTransitioning() && cpuHand.canDrawCards() && shouldDraw())
                 {
                     if (deck.CanDraw())
                         cpuHand.add(deck.Draw());
@@ -159,10 +166,47 @@ public class GameController : MonoBehaviour
                     if (!cpuHand.isTransitioning())
                     {
                         playingGame = false;
-                        //evaluateOutcome();
-                        Debug.Log("Game Ended!");
+                        evaluateOutcome();
                     }
                 }
+            }
+        }
+    }
+
+    bool shouldDraw()
+    {
+        return cpuHand.HandCount() < 2 // Always draw at least two cards
+            || (cpuHand.getScore() < 16 && !(playerHand.getScore() > 21))
+            || (playerHand.getScore() <= 19 && cpuHand.getScore() < playerHand.getScore());
+    }
+
+    void evaluateOutcome()
+    {
+        if (playerHand.getScore() > 21 && cpuHand.getScore() <= 21)
+        {
+            loseCanvas.gameObject.SetActive(true);
+            enemyWins++;
+            enemyWinCount.text = "Wins: "+enemyWins;
+        } else if (playerHand.getScore() > 21 && cpuHand.getScore() > 21)
+        {
+            loseCanvas.gameObject.SetActive(true);
+        } else if (playerHand.getScore() <= 21 && cpuHand.getScore() > 21)
+        {
+            winsCanvas.gameObject.SetActive(true);
+            playerWins++;
+            playerWinCount.text = "Wins: " + playerWins;
+        } else // if (playerHand.getScore() <= 21 && cpuHand.getScore() <= 21)
+        {
+            if (playerHand.getScore() > cpuHand.getScore())
+            {
+                winsCanvas.gameObject.SetActive(true);
+                playerWins++;
+                playerWinCount.text = "Wins: " + playerWins;
+            } else
+            {
+                loseCanvas.gameObject.SetActive(true);
+                enemyWins++;
+                enemyWinCount.text = "Wins: " + enemyWins;
             }
         }
     }
