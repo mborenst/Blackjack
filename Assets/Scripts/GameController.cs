@@ -78,6 +78,7 @@ public class GameController : MonoBehaviour
             else
             {
                 deck.NewShuffledDeck(playerHand.GetCards());
+                discard.DestroyCards();
             }
         }
         if (playerTurn && Input.GetKeyDown(KeyCode.Return) && !playerHand.isTransitioning())
@@ -99,17 +100,17 @@ public class GameController : MonoBehaviour
             Debug.Log("It is no longer the Player's turn...");
         }
 
-        if (!playerTurn && !playingGame && Input.GetKeyDown(KeyCode.Return))
+        if (!playerTurn && !playingGame && !discard.isMoving() && Input.GetKeyDown(KeyCode.Return))
         {
             Debug.Log("New Game Begin");
             discard.Add(addLists(playerHand.GetCards(), cpuHand.GetCards()));
-            discard.DestroyCards();
+            // discard.DestroyCards();
 
             playerHand = new Hand();
             cpuHand = new Hand(new Vector2(-6, 4));
             playerTurn = true;
-            playingGame = true;
             playerScore.text = "Player Score: \n" + playerHand.getScore();
+            enemyScore.text = "Enemy Score: \n" + cpuHand.getScore();
             drawingInitialCards = true;
             playerHand.add(deck.Draw());
             cpuHand.add(deck.Draw());
@@ -118,38 +119,49 @@ public class GameController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //deck.updateDeck();
-        if (drawingInitialCards && !playerHand.isTransitioning())
+        if (discard.isMoving())
         {
-            playerHand.add(deck.Draw());
-            drawingInitialCards = false;
-        }
-        playerHand.updateHand();
-        if (playerTurn && !playerHand.isTransitioning())
-        {
-            playerScore.text = "Player Score: \n" + playerHand.getScore();
-        }
-        cpuHand.updateHand();
-        if (!cpuHand.isTransitioning())
-            enemyScore.text = "Enemy Score: \n" + cpuHand.getScore();
-        if (!playerTurn && playingGame)
-        {
-            if (!cpuHand.isTransitioning() && cpuHand.canDrawCards() && (cpuHand.HandCount() < 2 || (cpuHand.getScore() < 16 && !(playerHand.getScore() > 21))))
+            discard.UpdateCards();
+            if (!discard.isMoving())
             {
-                if (deck.CanDraw())
-                    cpuHand.add(deck.Draw());
+                playerTurn = true;
+                playingGame = true;
+            }
+        } else {
+            //deck.updateDeck();
+            if (drawingInitialCards && !playerHand.isTransitioning())
+            {
+                playerHand.add(deck.Draw());
+                drawingInitialCards = false;
+            }
+            playerHand.updateHand();
+            if (playerTurn && !playerHand.isTransitioning())
+            {
+                playerScore.text = "Player Score: \n" + playerHand.getScore();
+            }
+            cpuHand.updateHand();
+            if (!cpuHand.isTransitioning())
+                enemyScore.text = "Enemy Score: \n" + cpuHand.getScore();
+            if (!playerTurn && playingGame)
+            {
+                if (!cpuHand.isTransitioning() && cpuHand.canDrawCards() && (cpuHand.HandCount() < 2 || (cpuHand.getScore() < 16 && !(playerHand.getScore() > 21))))
+                {
+                    if (deck.CanDraw())
+                        cpuHand.add(deck.Draw());
+                    else
+                    {
+                        deck.NewShuffledDeck(addLists(playerHand.GetCards(), cpuHand.GetCards()));
+                        discard.DestroyCards();
+                    }
+                }
                 else
                 {
-                    deck.NewShuffledDeck(addLists(playerHand.GetCards(), cpuHand.GetCards()));
-                }
-            } 
-            else
-            {
-                if (!cpuHand.isTransitioning())
-                {
-                    playingGame = false;
-                    //evaluateOutcome();
-                    Debug.Log("Game Ended!");
+                    if (!cpuHand.isTransitioning())
+                    {
+                        playingGame = false;
+                        //evaluateOutcome();
+                        Debug.Log("Game Ended!");
+                    }
                 }
             }
         }

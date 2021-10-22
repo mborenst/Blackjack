@@ -30,6 +30,16 @@ public class Card
         sprite.transform.position = pos;
     }
 
+    internal Vector2 getPosition()
+    {
+        return sprite.transform.position;
+    }
+
+    public void deValue()
+    {
+        sprite.sortingLayerName = "Deck and Frames";
+    }
+
     internal int getScore()
     {
         if (number > 10)
@@ -51,7 +61,7 @@ public class Card
             sprite.sprite = face;
         else
             sprite.sprite = this.back;
-        sprite.sortingLayerName = "Deck and Frames";
+        sprite.sortingLayerName = "Cards";
         sprite.sortingOrder = 1;
         sprite.transform.position = new Vector2(-8, 2);
         sprite.transform.localScale = new Vector3(.8f, .8f, 1);
