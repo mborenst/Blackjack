@@ -70,4 +70,9 @@ public class HowToPlayController : MonoBehaviour
         else
             main.text = "ERROR \nERROR \nERROR";
     }
+
+    public void newGame()
+    {
+        GameController.instance.startNewGame();
+    }
 }

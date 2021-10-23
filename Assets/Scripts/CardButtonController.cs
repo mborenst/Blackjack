@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraAwakeningScript : MonoBehaviour
+public class CardButtonController : MonoBehaviour
 {
     // Start is called before the first frame update
-    void Start()
+    public void doStuff(Sprite image)
     {
-        GameController.instance.setObject(this.GetComponent<Camera>());
+        GameController.instance.beginNewGame(image);
     }
 }
