@@ -9,4 +9,9 @@ public class CardButtonController : MonoBehaviour
     {
         GameController.instance.beginNewGame(image);
     }
+
+    public void quitGame()
+    {
+        Application.Quit();
+    }
 }
